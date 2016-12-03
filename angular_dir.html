@@ -1,0 +1,35 @@
+<!doctype html>
+<html ng-app>
+    <head>
+        <script src="./node_modules/angular/angular.js"></script>
+    </head>
+
+    <body ng-controller="MyCtrl" ng-init="someText = 'Some Text'">
+        {{someText}}
+        <a hfre="" ng-click="click_me()">click me</a>
+        <div ng-show="show">I'm Hidden</div>
+        <div ng-hide="show">I'm Visible</div>
+        <input ng-model="someText"/>
+
+        <ul>
+            <li ng-repeat="person in someList">
+                {{person.name}} {{person.lname | uppercase}}
+            </li>
+        </ul>
+
+        <script>
+         function MyCtrl($scope) {
+             $scope.show = false;
+             $scope.click_me = function() {
+                 $scope.show = true;
+             }
+
+             $scope.someList = [
+                 {name: 'Vahid', lname: 'Yarizade'},
+                 {name: 'Mohsen', lname: 'Esmaily'},
+                 {name: 'Mohammad Sadegh', lname: 'Khoeini'},
+             ];
+         }
+        </script>
+    </body>
+</html>

@@ -1,0 +1,285 @@
+#+TITLE: AngularJS Demo
+#+AUTHOR: Mohammad Sadegh Khoeini (MSK)
+
+* Initialize Server
+
+#+BEGIN_SRC emacs-lisp
+  (require 'simple-httpd)
+  (setq httpd-root default-directory)
+  (setq httpd-port 8081)
+  (httpd-start)
+
+  (defservlet* hello-world plain/text (name)
+    (insert (format "hello, %s" name)))
+#+end_src
+
+#+RESULTS:
+: httpd/hello-world
+
+* JS is Hard
+
+Pure JS to be portable is full of caveats and is hard.
+
+#+BEGIN_SRC js
+  var myElem = document.getElementById("MyElement");
+
+  if (myElem.className.match(/(?:^|\s)MyClass(?!\S)/)) {
+      myElem.className = myElem.className
+          .replace(/(?:^|\s)MyClass(?!\S)/g , '');
+  } else {
+      myElem.className += " MyClass";
+  }
+#+END_SRC
+
+* JQuery
+
+People usually use something like JQuery.
+
+#+BEGIN_SRC js
+  $('#MyElement').toggleClass('MyClass');
+#+END_SRC
+
+* Angular is a Framework on Top of JQuery
+
+Angular adds MVC and DI on top of what JQuery already provides.
+
+#+BEGIN_SRC html :tangle angular1.html
+  <html>
+    <head>
+      <title>Test Angular</title>
+      <script src="./node_modules/angular/angular.js"></script>
+      <style>
+        .red {
+            background-color: red;
+        }
+        .blue {
+            background-color: blue;
+        }
+      </style>
+    </head>
+
+    <body ng-app>
+      <div ng-controller="MyController">
+        <h2 class="{{myClassName}}">Some text</h2>
+        <button ng-click="onClick()">toggle</button>
+      </div>
+
+      <script>
+        function MyController($scope) {
+          $scope.myClassName = 'red';
+
+          $scope.onClick = function() {
+            if ($scope.myClassName === 'red') {
+              $scope.myClassName = 'blue';
+            } else {
+              $scope.myClassName = 'red';
+            }
+          }
+        }
+      </script>
+    </body>
+  </html>
+#+END_SRC
+
+* Scope
+
+Scope is where the data resides. Scopes inherite from each other.
+
+#+BEGIN_SRC html :tangle angular2.html
+  <!doctype html>
+  <html>
+      <head>
+          <title>Page</title>
+          <script src="./node_modules/angular/angular.js"></script>
+      </head>
+
+      <body ng-app>
+          <div ng-controller="Ctrl1">
+              <h1>1- {{name}}</h1>
+              <div ng-controller="Ctrl2">
+                  <h2>2- {{name}}</h2>
+                  <h3>3- {{name2}}</h3>
+              </div>
+          </div>
+          <div ng-controller="Ctrl3">
+              <h1>4- {{name}}</h1>
+              <h2>5- {{name2}}</h2>
+              <h3>5- {{name3}}</h3>
+          </div>
+
+          <script>
+           function Ctrl1($scope, $rootScope) {
+               $scope.name = 'First Controller';
+               $rootScope.name3 = 'Root Name';
+           }
+
+           function Ctrl2($scope) {
+               $scope.name2 = 'Second Controller';
+           }
+
+           function Ctrl3($scope) {
+               $scope.name = 'Third Controller';
+           }
+          </script>
+      </body>
+  </html>
+#+END_SRC
+
+* Modules
+
+Angular allows you to organize your code into modules.
+
+#+BEGIN_SRC html :tangle angular3.html
+  <!doctype html>
+  <html ng-app="app">
+      <head>
+          <script src="./node_modules/angular/angular.js"></script>
+      </head>
+
+      <body ng-controller="MyController">
+          <h1>{{heading}}</h1>
+
+          <script src="my_module1.js"></script>
+          <script src="my_module2.js"></script>
+      </body>
+  </html>
+#+END_SRC
+
+#+BEGIN_SRC js :tangle my_module1.js
+  var myModule = angular.module('myModule', []);
+
+  myModule.controller('MyController', function($scope) {
+      $scope.heading = 'Some Text';
+  });
+#+END_SRC
+
+#+BEGIN_SRC js :tangle my_module2.js
+  var app = angular.module('app', ['myModule']);
+#+END_SRC
+
+* Utility Services ($q, $timeout, $http)
+
+Promises are for storing values that are going to be fulfilled sometime in the
+future.
+
+#+BEGIN_SRC html :tangle angular_q.html
+  <!doctype html>
+  <html ng-app>
+      <head>
+          <script src="./node_modules/angular/angular.js"></script>
+      </head>
+
+      <body ng-controller="MyCtrl">
+          <h1 ng-bind="heading"></h1>
+
+          <script>
+           function MyCtrl($scope, $q, $timeout, $http) {
+               var deffered = $q.defer();
+               var promise = deffered.promise;
+
+               promise.then(function(result) {
+                   $scope.heading = result;
+               });
+
+               function setHeading() {
+                   var text = $http.get('/hello-world?name=folks');
+
+                   text.then(function(result) {
+                       deffered.resolve(result.data);
+                   });
+               }
+               $timeout(setHeading, 2000);
+           }
+          </script>
+      </body>
+  </html>
+#+END_SRC
+
+* Some Directives
+
+Also, Angular comes with a bundle of directives.
+
+#+BEGIN_SRC html :tangle angular_dir.html
+  <!doctype html>
+  <html ng-app>
+      <head>
+          <script src="./node_modules/angular/angular.js"></script>
+      </head>
+
+      <body ng-controller="MyCtrl" ng-init="someText = 'Some Text'">
+          {{someText}}
+          <a hfre="" ng-click="click_me()">click me</a>
+          <div ng-show="show">I'm Hidden</div>
+          <div ng-hide="show">I'm Visible</div>
+          <input ng-model="someText"/>
+
+          <ul>
+              <li ng-repeat="person in someList">
+                  {{person.name}} {{person.lname | uppercase}}
+              </li>
+          </ul>
+
+          <script>
+           function MyCtrl($scope) {
+               $scope.show = false;
+               $scope.click_me = function() {
+                   $scope.show = true;
+               }
+
+               $scope.someList = [
+                   {name: 'Vahid', lname: 'Yarizade'},
+                   {name: 'Mohsen', lname: 'Esmaily'},
+                   {name: 'Mohammad Sadegh', lname: 'Khoeini'},
+               ];
+           }
+          </script>
+      </body>
+  </html>
+#+END_SRC
+
+* Defining Services
+
+You can factor your code in services which can be injected later on.
+
+#+BEGIN_SRC html :tangle angular_serv.html
+  <!doctype html>
+  <html ng-app="app">
+      <head>
+          <script src="./node_modules/angular/angular.js"></script>
+      </head>
+
+      <body ng-controller="MyCtrl">
+          {{time}}
+
+          <script src="ang_serv1.js"></script>
+          <script src="ang_serv2.js"></script>
+      </body>
+  </html>
+#+END_SRC
+
+#+BEGIN_SRC js :tangle ang_serv1.js
+  var module = angular.module('myModule', []);
+
+  module.factory('getTime', function() {
+      return function() {
+          var date = new Date();
+          return date.toString();
+      }
+  })
+#+END_SRC
+
+#+BEGIN_SRC js :tangle ang_serv2.js
+  var module = angular.module('app', ['myModule']);
+
+  module.controller('MyCtrl', function(getTime, $scope) {
+      $scope.time = getTime();
+  });
+#+END_SRC
+
+* Creating Directives
+
+Angular allows you to create your own directives.
+
+#+BEGIN_SRC html :tangle 
+
+#+END_SRC

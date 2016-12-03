@@ -1,0 +1,30 @@
+<!doctype html>
+<html ng-app>
+    <head>
+        <script src="./node_modules/angular/angular.js"></script>
+    </head>
+
+    <body ng-controller="MyCtrl">
+        <h1 ng-bind="heading"></h1>
+
+        <script>
+         function MyCtrl($scope, $q, $timeout, $http) {
+             var deffered = $q.defer();
+             var promise = deffered.promise;
+
+             promise.then(function(result) {
+                 $scope.heading = result;
+             });
+
+             function setHeading() {
+                 var text = $http.get('/hello-world?name=folks');
+
+                 text.then(function(result) {
+                     deffered.resolve(result.data);
+                 });
+             }
+             $timeout(setHeading, 2000);
+         }
+        </script>
+    </body>
+</html>

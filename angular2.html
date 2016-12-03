@@ -1,0 +1,37 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Page</title>
+        <script src="./node_modules/angular/angular.js"></script>
+    </head>
+
+    <body ng-app>
+        <div ng-controller="Ctrl1">
+            <h1>1- {{name}}</h1>
+            <div ng-controller="Ctrl2">
+                <h2>2- {{name}}</h2>
+                <h3>3- {{name2}}</h3>
+            </div>
+        </div>
+        <div ng-controller="Ctrl3">
+            <h1>4- {{name}}</h1>
+            <h2>5- {{name2}}</h2>
+            <h3>5- {{name3}}</h3>
+        </div>
+
+        <script>
+         function Ctrl1($scope, $rootScope) {
+             $scope.name = 'First Controller';
+             $rootScope.name3 = 'Root Name';
+         }
+
+         function Ctrl2($scope) {
+             $scope.name2 = 'Second Controller';
+         }
+
+         function Ctrl3($scope) {
+             $scope.name = 'Third Controller';
+         }
+        </script>
+    </body>
+</html>

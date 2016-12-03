@@ -1,0 +1,35 @@
+<html>
+  <head>
+    <title>Test Angular</title>
+    <script src="./node_modules/angular/angular.js"></script>
+    <style>
+      .red {
+          background-color: red;
+      }
+      .blue {
+          background-color: blue;
+      }
+    </style>
+  </head>
+
+  <body ng-app>
+    <div ng-controller="MyController">
+      <h2 class="{{myClassName}}">Some text</h2>
+      <button ng-click="onClick()">toggle</button>
+    </div>
+
+    <script>
+      function MyController($scope) {
+        $scope.myClassName = 'red';
+
+        $scope.onClick = function() {
+          if ($scope.myClassName === 'red') {
+            $scope.myClassName = 'blue';
+          } else {
+            $scope.myClassName = 'red';
+          }
+        }
+      }
+    </script>
+  </body>
+</html>
