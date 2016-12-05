@@ -81,6 +81,8 @@ Angular adds MVC and DI on top of what JQuery already provides.
   </html>
 #+END_SRC
 
+TODO: use ng-class.
+
 * Scope
 
 Scope is where the data resides. Scopes inherite from each other.
@@ -125,75 +127,9 @@ Scope is where the data resides. Scopes inherite from each other.
   </html>
 #+END_SRC
 
-* Modules
-
-Angular allows you to organize your code into modules.
-
-#+BEGIN_SRC html :tangle angular3.html
-  <!doctype html>
-  <html ng-app="app">
-      <head>
-          <script src="./node_modules/angular/angular.js"></script>
-      </head>
-
-      <body ng-controller="MyController">
-          <h1>{{heading}}</h1>
-
-          <script src="my_module1.js"></script>
-          <script src="my_module2.js"></script>
-      </body>
-  </html>
-#+END_SRC
-
-#+BEGIN_SRC js :tangle my_module1.js
-  var myModule = angular.module('myModule', []);
-
-  myModule.controller('MyController', function($scope) {
-      $scope.heading = 'Some Text';
-  });
-#+END_SRC
-
-#+BEGIN_SRC js :tangle my_module2.js
-  var app = angular.module('app', ['myModule']);
-#+END_SRC
-
-* Utility Services ($q, $timeout, $http)
-
-Promises are for storing values that are going to be fulfilled sometime in the
-future.
-
-#+BEGIN_SRC html :tangle angular_q.html
-  <!doctype html>
-  <html ng-app>
-      <head>
-          <script src="./node_modules/angular/angular.js"></script>
-      </head>
-
-      <body ng-controller="MyCtrl">
-          <h1 ng-bind="heading"></h1>
-
-          <script>
-           function MyCtrl($scope, $q, $timeout, $http) {
-               var deffered = $q.defer();
-               var promise = deffered.promise;
-
-               promise.then(function(result) {
-                   $scope.heading = result;
-               });
-
-               function setHeading() {
-                   var text = $http.get('/hello-world?name=folks');
-
-                   text.then(function(result) {
-                       deffered.resolve(result.data);
-                   });
-               }
-               $timeout(setHeading, 2000);
-           }
-          </script>
-      </body>
-  </html>
-#+END_SRC
+* $watch
+  
+TBD.
 
 * Some Directives
 
@@ -237,7 +173,93 @@ Also, Angular comes with a bundle of directives.
   </html>
 #+END_SRC
 
-* Defining Services
+* Rest of Directives
+
+TBD.
+
+* Some Filters
+
+TBD.
+
+* Rest of Filters
+
+TBD.
+
+* Some Utility Services
+
+Promises are for storing values that are going to be fulfilled sometime in the
+future.
+
+#+BEGIN_SRC html :tangle angular_q.html
+  <!doctype html>
+  <html ng-app>
+      <head>
+          <script src="./node_modules/angular/angular.js"></script>
+      </head>
+
+      <body ng-controller="MyCtrl">
+          <h1 ng-bind="heading"></h1>
+
+          <script>
+           function MyCtrl($scope, $q, $timeout, $http) {
+               var deffered = $q.defer();
+               var promise = deffered.promise;
+
+               promise.then(function(result) {
+                   $scope.heading = result;
+               });
+
+               function setHeading() {
+                   var text = $http.get('/hello-world?name=folks');
+
+                   text.then(function(result) {
+                       deffered.resolve(result.data);
+                   });
+               }
+               $timeout(setHeading, 2000);
+           }
+          </script>
+      </body>
+  </html>
+#+END_SRC
+
+* Rest of Services
+
+TBD.
+
+* Modules
+
+Angular allows you to organize your code into modules.
+
+#+BEGIN_SRC html :tangle angular3.html
+  <!doctype html>
+  <html ng-app="app">
+      <head>
+          <script src="./node_modules/angular/angular.js"></script>
+      </head>
+
+      <body ng-controller="MyController">
+          <h1>{{heading}}</h1>
+
+          <script src="my_module1.js"></script>
+          <script src="my_module2.js"></script>
+      </body>
+  </html>
+#+END_SRC
+
+#+BEGIN_SRC js :tangle my_module1.js
+  var myModule = angular.module('myModule', []);
+
+  myModule.controller('MyController', function($scope) {
+      $scope.heading = 'Some Text';
+  });
+#+END_SRC
+
+#+BEGIN_SRC js :tangle my_module2.js
+  var app = angular.module('app', ['myModule']);
+#+END_SRC
+
+* Creating Services
 
 You can factor your code in services which can be injected later on.
 
@@ -276,10 +298,35 @@ You can factor your code in services which can be injected later on.
   });
 #+END_SRC
 
+* Creating Filters
+
+TBD.
+
 * Creating Directives
 
 Angular allows you to create your own directives.
 
 #+BEGIN_SRC html :tangle 
-
+TBD: Simplest kind.
 #+END_SRC
+
+* ngRoute
+
+TBD. Simple routing and templates. <ng-view/>
+
+* ngResource
+
+TBD.
+
+* use strict
+
+TBD.
+
+* About JS Object References
+
+TBD. [].slice(), angular.copy();
+
+* Angular Utility Functions
+
+TBD.
+
